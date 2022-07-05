@@ -17,17 +17,17 @@ public class ThreadLocalLogTrace implements LogTrace{
     @Override
     public TraceStatus begin(String message) {
         syncTraceId();
-        TraceId nextId = traceIdHolder.get();
+        TraceId traceId = traceIdHolder.get();
         Long startTimeMs = System.currentTimeMillis();
-        log.info("[{}] {}{}", nextId.getId(), addSpace(START_PREFIX, nextId.getLevel()), message);
+        log.info("[{}] {}{}", traceId.getId(), addSpace(START_PREFIX, traceId.getLevel()), message);
 
         //로그출력
-        return new TraceStatus(nextId, startTimeMs, message);
+        return new TraceStatus(traceId, startTimeMs, message);
     }
 
     private void syncTraceId() {
         TraceId traceId = traceIdHolder.get();
-        if (traceIdHolder == null) {
+        if (traceId == null) {
             traceIdHolder.set(new TraceId());
         } else {
             traceIdHolder.set(traceId.createNextId());
